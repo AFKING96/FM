@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { BrainCircuit, Play, LayoutGrid, CheckCircle2, XCircle, Trophy, Volume2, VolumeX, RotateCcw, Home } from "lucide-react";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { BrainCircuit, Play, LayoutGrid, CheckCircle2, XCircle, Trophy, Volume2, VolumeX, RotateCcw, Home, Lightbulb, Rocket, BarChart3 } from "lucide-react";
 import { NeonButton } from "./ui/NeonButton";
 import { GlassCard } from "./ui/GlassCard";
 import { useQuizLogic } from "@/hooks/useQuizLogic";
@@ -91,31 +91,93 @@ export function GameLogic() {
 // INTRO SCREEN
 // ----------------------------------------------------
 function IntroScreen({ onStart }: { onStart: () => void }) {
+  // Mouse tracking logic for parallax
+  const x = useMotionValue(typeof window !== "undefined" ? window.innerWidth / 2 : 500);
+  const y = useMotionValue(typeof window !== "undefined" ? window.innerHeight / 2 : 500);
+
+  const mouseXSpring = useSpring(x, { stiffness: 50, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 50, damping: 20 });
+
+  const moveX1 = useTransform(mouseXSpring, [0, typeof window !== "undefined" ? window.innerWidth : 1000], [50, -50]);
+  const moveY1 = useTransform(mouseYSpring, [0, typeof window !== "undefined" ? window.innerHeight : 1000], [50, -50]);
+
+  const moveX2 = useTransform(mouseXSpring, [0, typeof window !== "undefined" ? window.innerWidth : 1000], [-40, 40]);
+  const moveY2 = useTransform(mouseYSpring, [0, typeof window !== "undefined" ? window.innerHeight : 1000], [-50, 50]);
+
+  const moveX3 = useTransform(mouseXSpring, [0, typeof window !== "undefined" ? window.innerWidth : 1000], [60, -60]);
+  const moveY3 = useTransform(mouseYSpring, [0, typeof window !== "undefined" ? window.innerHeight : 1000], [-30, 30]);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    x.set(e.clientX);
+    y.set(e.clientY);
+  };
+
   return (
     <motion.div
-      className="flex flex-col items-center text-center"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, filter: "blur(10px)" }}
-      transition={{ duration: 0.5 }}
+      className="absolute inset-0 flex flex-col items-center justify-center text-center overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, filter: "blur(10px)", transition: { duration: 0.5 } }}
+      onMouseMove={handleMouseMove}
     >
-      <motion.div
-        animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="mb-6 relative"
+      {/* Floating Hologram 1: Top Left */}
+      <motion.div 
+        className="absolute top-[15%] left-[10%] md:left-[20%] p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_0_20px_rgba(168,85,247,0.3)] hidden md:block"
+        style={{ x: moveX1, y: moveY1 }}
+        animate={{ y: [0, -15, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       >
-        <BrainCircuit className="w-24 h-24 text-brand-500 drop-shadow-[0_0_15px_rgba(168,85,247,0.8)]" />
+        <Lightbulb size={36} className="text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]" />
       </motion.div>
-      <h1 className="text-6xl md:text-8xl font-extrabold text-white mb-2 tracking-tighter">
-        FM <span className="text-gradient">Quiz</span>
-      </h1>
-      <p className="text-xl md:text-2xl text-brand-100/70 mb-10 font-light">
-        Upgrade Your Mind 🚀
-      </p>
-      
-      <NeonButton size="lg" onClick={onStart} className="text-xl shadow-[0_0_30px_rgba(168,85,247,0.4)] px-12">
-        <Play size={24} fill="currentColor" /> Let's Go
-      </NeonButton>
+
+      {/* Floating Hologram 2: Bottom Right */}
+      <motion.div 
+        className="absolute bottom-[15%] right-[10%] md:right-[20%] p-5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_0_20px_rgba(59,130,246,0.3)] hidden md:block"
+        style={{ x: moveX2, y: moveY2 }}
+        animate={{ y: [0, 20, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+      >
+        <Rocket size={40} className="text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
+      </motion.div>
+
+      {/* Floating Hologram 3: Center Left */}
+      <motion.div 
+        className="absolute top-[60%] left-[5%] md:left-[15%] p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_0_20px_rgba(168,85,247,0.3)] hidden md:block z-0"
+        style={{ x: moveX3, y: moveY3 }}
+        animate={{ y: [0, 10, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+      >
+        <BarChart3 size={28} className="text-brand-400 drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
+      </motion.div>
+
+      {/* Main Center Content */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8 }}
+        className="relative z-10 flex flex-col items-center pointer-events-none"
+      >
+        <motion.div
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="mb-8 relative"
+        >
+          <BrainCircuit className="w-28 h-28 text-brand-500 drop-shadow-[0_0_20px_rgba(168,85,247,1)]" />
+        </motion.div>
+
+        <h1 className="text-6xl md:text-8xl font-extrabold text-white mb-4 tracking-tighter mix-blend-screen drop-shadow-2xl">
+          FM <span className="text-gradient">Quiz</span>
+        </h1>
+        <p className="text-xl md:text-3xl text-brand-100/80 mb-12 font-light tracking-wide shadow-black drop-shadow-lg">
+          Upgrade Your Mind 🚀
+        </p>
+        
+        <div className="pointer-events-auto">
+          <NeonButton size="lg" onClick={onStart} className="text-xl shadow-[0_0_40px_rgba(168,85,247,0.6)] px-14 py-4 rounded-2xl">
+            <Play size={28} fill="currentColor" /> Let's Go
+          </NeonButton>
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
