@@ -91,65 +91,13 @@ export function GameLogic() {
 // INTRO SCREEN
 // ----------------------------------------------------
 function IntroScreen({ onStart }: { onStart: () => void }) {
-  // Mouse tracking logic for parallax
-  const x = useMotionValue(typeof window !== "undefined" ? window.innerWidth / 2 : 500);
-  const y = useMotionValue(typeof window !== "undefined" ? window.innerHeight / 2 : 500);
-
-  const mouseXSpring = useSpring(x, { stiffness: 50, damping: 20 });
-  const mouseYSpring = useSpring(y, { stiffness: 50, damping: 20 });
-
-  const moveX1 = useTransform(mouseXSpring, [0, typeof window !== "undefined" ? window.innerWidth : 1000], [50, -50]);
-  const moveY1 = useTransform(mouseYSpring, [0, typeof window !== "undefined" ? window.innerHeight : 1000], [50, -50]);
-
-  const moveX2 = useTransform(mouseXSpring, [0, typeof window !== "undefined" ? window.innerWidth : 1000], [-40, 40]);
-  const moveY2 = useTransform(mouseYSpring, [0, typeof window !== "undefined" ? window.innerHeight : 1000], [-50, 50]);
-
-  const moveX3 = useTransform(mouseXSpring, [0, typeof window !== "undefined" ? window.innerWidth : 1000], [60, -60]);
-  const moveY3 = useTransform(mouseYSpring, [0, typeof window !== "undefined" ? window.innerHeight : 1000], [-30, 30]);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    x.set(e.clientX);
-    y.set(e.clientY);
-  };
-
   return (
     <motion.div
       className="absolute inset-0 flex flex-col items-center justify-center text-center overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, filter: "blur(10px)", transition: { duration: 0.5 } }}
-      onMouseMove={handleMouseMove}
     >
-      {/* Floating Hologram 1: Top Left */}
-      <motion.div 
-        className="absolute top-[15%] left-[10%] md:left-[20%] p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_0_20px_rgba(168,85,247,0.3)] hidden md:block"
-        style={{ x: moveX1, y: moveY1 }}
-        animate={{ y: [0, -15, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <Lightbulb size={36} className="text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]" />
-      </motion.div>
-
-      {/* Floating Hologram 2: Bottom Right */}
-      <motion.div 
-        className="absolute bottom-[15%] right-[10%] md:right-[20%] p-5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_0_20px_rgba(59,130,246,0.3)] hidden md:block"
-        style={{ x: moveX2, y: moveY2 }}
-        animate={{ y: [0, 20, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-      >
-        <Rocket size={40} className="text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
-      </motion.div>
-
-      {/* Floating Hologram 3: Center Left */}
-      <motion.div 
-        className="absolute top-[60%] left-[5%] md:left-[15%] p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_0_20px_rgba(168,85,247,0.3)] hidden md:block z-0"
-        style={{ x: moveX3, y: moveY3 }}
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-      >
-        <BarChart3 size={28} className="text-brand-400 drop-shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
-      </motion.div>
-
       {/* Main Center Content */}
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
