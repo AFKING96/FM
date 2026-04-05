@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-100: #e9d5ff;
+  --color-brand-500: #a855f7;
+  --color-brand-600: #9333ea;
+  --color-brand-700: #7e22ce;
+  --color-brand-800: #6b21a8;
+  --color-brand-900: #581c87;
+  --color-neon-purple: #d946ef;
+  --color-neon-blue: #3b82f6;
+  --color-dark-bg: #09090b;
+  --color-glass-surface: rgba(255, 255, 255, 0.03);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-glow: glow 2s ease-in-out infinite alternate;
+  
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 10px -2px var(--color-brand-500), 0 0 5px -1px var(--color-brand-500);
+    }
+    to {
+      box-shadow: 0 0 20px 2px var(--color-brand-500), 0 0 10px 2px var(--color-neon-purple);
+    }
+  }
+}
+
+:root {
+  --background: #09090b; /* Force Dark mode */
+  --foreground: #ededed;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), sans-serif;
+  overflow-x: hidden;
+}
+
+/* Base custom utilities */
+.glass-panel {
+  background: var(--color-glass-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-glass-border);
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #e9d5ff, #d946ef);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
