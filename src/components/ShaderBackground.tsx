@@ -5,7 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 function Particles() {
-  const count = 3000;
+  const count = 1200;
   const mesh = useRef<THREE.Points>(null);
   
   // Generate random particles
@@ -72,8 +72,12 @@ export default function ShaderBackground() {
       {/* Fallback ambient gradient */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-900/40 via-dark-bg to-dark-bg opacity-70"></div>
       
-      {/* WebGL Canvas */}
-      <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+      {/* WebGL Canvas - Optimized DPR and framerate for smoothness */}
+      <Canvas 
+        camera={{ position: [0, 0, 5], fov: 75 }}
+        dpr={[1, 1.5]}
+        performance={{ min: 0.5 }}
+      >
         <Particles />
       </Canvas>
     </div>

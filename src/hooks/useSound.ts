@@ -30,6 +30,13 @@ export function useSound() {
     setEnabled((prev) => {
       const next = !prev;
       localStorage.setItem("fm_quiz_sound", next.toString());
+      
+      // Immediately kill all actively playing sounds
+      if (!next && audioCtx) {
+        audioCtx.close().catch(() => {});
+        audioCtx = null;
+      }
+      
       return next;
     });
   };
